@@ -2,6 +2,7 @@ package main
 
 import (
 	"coffee-pos-backend/models"
+	"coffee-pos-backend/routes"
 	"fmt"
 	"log"
 	"net/http"
@@ -40,6 +41,10 @@ func main() {
 		})
 	})
 
+
+	authenRoutes := routes.NewAuthenRoute(r)
+	authenRoutes.Setup()
+
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found")
 	}
@@ -55,5 +60,7 @@ func main() {
 	// router := gin.New()
 	// router.Use(gin.Logger())
 	// router.Use(middleware.Authentication())
+
+
 }
 
