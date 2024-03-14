@@ -1,19 +1,59 @@
 package main
 
 import (
+	"coffee-pos-backend/models"
+	"fmt"
+	"log"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-func main() {
-	port := os.Getenv("PORT")
+var db *gorm.DB
+var err error
 
+func initDB() {
+	dsn := "host=localhost user=youruser dbname=yourdb password=yourpassword port=5430 sslmode=disable"
+	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err!=nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+
+	fmt.Println("Database connected")
+
+	db.AutoMigrate(&models.User{}, &models.Role{})
+
+}
+
+func main() {
+	r := gin.Default()
+
+	initDB()
+
+	r.GET("/checkapi", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
+			"message": "API IS WORKING",
+		})
+	})
+
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found")
+	}
+
+	port := os.Getenv("PORT")
 	if port == "" {
 		port = "3333"
 	}
+	if err := r.Run(":"+ port); err!=nil {
+		log.Fatalf("Failed to start server")
+	}
 
-	router := gin.New()
-	router.Use(gin.Logger())
+	// router := gin.New()
+	// router.Use(gin.Logger())
+	// router.Use(middleware.Authentication())
 }
 
