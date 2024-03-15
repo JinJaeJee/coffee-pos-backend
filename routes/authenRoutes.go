@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"coffee-pos-backend/controllers/auth"
+	controllers "coffee-pos-backend/controllers/auth"
 	"coffee-pos-backend/middlewares"
 
 	"github.com/gin-gonic/gin"
@@ -9,14 +9,14 @@ import (
 
 type AuthenRoutes struct {
 	app *gin.Engine
-	authenCTRL *auth.AuthController
+	authenCTRL *controllers.AuthController
 	authenMDW *middlewares.AuthenticatorMDW
 }
 
 func NewAuthenRoute(app *gin.Engine) *AuthenRoutes {
 	return &AuthenRoutes{
 		app: app,
-		authenCTRL: auth.NewAuthController(),
+		authenCTRL: controllers.NewAuthController(),
 		authenMDW: middlewares.NewAuthenticatorMDW(),
 	}
 }

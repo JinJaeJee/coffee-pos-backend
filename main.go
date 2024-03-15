@@ -42,8 +42,7 @@ func main() {
 	})
 
 
-	authenRoutes := routes.NewAuthenRoute(r)
-	authenRoutes.Setup()
+	routes.NewAuthenRoute(r).Setup()
 
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found")
