@@ -1,33 +1,24 @@
 package routes
 
 import (
-	controllers "coffee-pos-backend/controllers/user"
-	"coffee-pos-backend/middlewares"
+	"coffee-pos-backend/controllers"
+	"coffee-pos-backend/repositories"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 
-type UserRoutes struct {
-	app *gin.Engine
-	userCTRL *controllers.UserController
-	userMDW *middlewares.AuthenticatorMDW
+func UserRoutes(r *gin.Engine, db *gorm.DB) {
+	userRepo := repositories.NewUserRepository(db)
+	userController := controllers.NewUserController(userRepo)
 
+	userGroup := r.Group("/users")
+{
+	userGroup.POST("/create", userController.CreateUser)
+	userGroup.GET("/:id", userController.GetUser)
+	// userGroup.PUT("/:id", userController.UpdateUser)
+	// userGroup.DELETE("/:id", userController.DeleteUser)
+	userGroup.GET("/getAlls", userController.GetAllUsers)
 }
-
-func NewUserRoute(app *gin.Engine) *UserRoutes {
-	return &UserRoutes{
-		app: app,
-		userCTRL: controllers.NewUserController(),
-		userMDW: middlewares.NewAuthenticatorMDW(),
-	}
-}
-
-
-func (r *UserRoutes) Setup(){
-	UserRoutes := r.app.Group("/users")
-	{
-		UserRoutes.POST("/create", r.userCTRL.CreateUser)
-
-	}
 }

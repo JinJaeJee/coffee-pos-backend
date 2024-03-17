@@ -31,18 +31,19 @@ func initDB() {
 }
 
 func main() {
+	initDB()
 	r := gin.Default()
 
-	initDB()
-
+	// SeedRoles(db)
+	routes.NewAuthenRoute(r).Setup()
+	routes.UserRoutes(r, db)
 	r.GET("/checkapi", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
-			"message": "API IS WORKING",
+			"message": "Welcome to POS-Coffee-Cafe API!",
 		})
 	})
 
 
-	routes.NewAuthenRoute(r).Setup()
 
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found")

@@ -6,7 +6,14 @@ type User struct {
 	gorm.Model
 	Username string `gorm:"unique;not null"`
 	PasswordHash string `gorm:"not null"`
-	RoleID uint 
-	Role Role `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	FullName string
+	Tel string
+	Email string
+	IsActive bool
+	RoleID uint
+}
 
+type UserWithRole struct {
+	User
+	RoleName    string
 }

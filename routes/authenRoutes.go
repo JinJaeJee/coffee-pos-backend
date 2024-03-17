@@ -1,7 +1,7 @@
 package routes
 
 import (
-	controllers "coffee-pos-backend/controllers/auth"
+	controllers "coffee-pos-backend/controllers"
 	"coffee-pos-backend/middlewares"
 
 	"github.com/gin-gonic/gin"
