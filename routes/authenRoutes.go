@@ -1,30 +1,17 @@
 package routes
 
 import (
-	controllers "coffee-pos-backend/controllers"
-	"coffee-pos-backend/middlewares"
+	"coffee-pos-backend/controllers"
+	"coffee-pos-backend/repositories"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-type AuthenRoutes struct {
-	app *gin.Engine
-	authenCTRL *controllers.AuthController
-	authenMDW *middlewares.AuthenticatorMDW
-}
+func AuthRoutes(r *gin.Engine, db *gorm.DB) {
+	userRepo := repositories.NewAuthRepository(db)
+	authController := controllers.NewAuthController(userRepo)
 
-func NewAuthenRoute(app *gin.Engine) *AuthenRoutes {
-	return &AuthenRoutes{
-		app: app,
-		authenCTRL: controllers.NewAuthController(),
-		authenMDW: middlewares.NewAuthenticatorMDW(),
-	}
-}
-
-func (r *AuthenRoutes) Setup(){
-	AuthenRoutes:= r.app.Group("/auth")
-	{
-		AuthenRoutes.POST("/login", r.authenCTRL.Login)
-		AuthenRoutes.POST("/logout", r.authenMDW.VerifyToken, r.authenCTRL.Logout)
-	}
+	r.POST("/login", authController.Login)
+	r.GET("/logout", authController.Logout)
 }

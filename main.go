@@ -20,7 +20,7 @@ var err error
 func initDB() {
 	dsn := "host=localhost user=youruser dbname=yourdb password=yourpassword port=5430 sslmode=disable"
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err!=nil {
+	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
@@ -35,15 +35,13 @@ func main() {
 	r := gin.Default()
 
 	// SeedRoles(db)
-	routes.NewAuthenRoute(r).Setup()
 	routes.UserRoutes(r, db)
+	routes.AuthRoutes(r, db)
 	r.GET("/checkapi", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{
 			"message": "Welcome to POS-Coffee-Cafe API!",
 		})
 	})
-
-
 
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found")
@@ -53,7 +51,7 @@ func main() {
 	if port == "" {
 		port = "3333"
 	}
-	if err := r.Run(":"+ port); err!=nil {
+	if err := r.Run(":" + port); err != nil {
 		log.Fatalf("Failed to start server")
 	}
 
@@ -61,6 +59,4 @@ func main() {
 	// router.Use(gin.Logger())
 	// router.Use(middleware.Authentication())
 
-
 }
-
