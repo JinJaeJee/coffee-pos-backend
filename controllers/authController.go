@@ -10,7 +10,6 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -18,18 +17,12 @@ type AuthController struct {
 	userRepo *repositories.AuthRepository
 }
 
-// jwtKey := []byte.(Getenv("SECRET"))
-
 func NewAuthController(userRepo *repositories.AuthRepository) *AuthController {
 	return &AuthController{userRepo: userRepo}
 }
 
 func (ctrl *AuthController) Login(c *gin.Context) {
 	var loginReq models.LoginRequest
-
-	if err := godotenv.Load(); err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
-	}
 
 	if err := c.ShouldBindJSON(&loginReq); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
