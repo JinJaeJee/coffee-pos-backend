@@ -47,13 +47,3 @@ func (r *UserRepository) GetAllUsers() ([]models.UserWithRole, error) {
 	err := r.db.Model(&models.User{}).Select("users.*, roles.role_name").Joins("left join roles on roles.id = users.role_id").Scan(&users).Error
 	return users, err
 }
-
-// func (r *UserRepository) GetAllUsers() ([]models.User, error) {
-// 	var users []models.User
-// 	err := r.db.Select("ID", "CreatedAt", "UpdatedAt", "Username", "RoleID").
-// 		Preload("Role", func(db *gorm.DB) *gorm.DB {
-// 			return db.Select("ID", "RoleName")
-// 		}).
-// 		Find(&users).Error
-// 	return users, err
-// }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"coffee-pos-backend/middlewares"
 	"coffee-pos-backend/models"
 	"coffee-pos-backend/routes"
 	"fmt"
@@ -26,13 +27,14 @@ func initDB() {
 
 	fmt.Println("Database connected")
 
-	db.AutoMigrate(&models.User{}, &models.Role{})
+	db.AutoMigrate(&models.User{}, &models.Role{}, &models.RolePermission{})
 
 }
 
 func main() {
 	initDB()
 	r := gin.Default()
+	r.Use(middlewares.VerifyToken())
 
 	// SeedRoles(db)
 	routes.UserRoutes(r, db)
@@ -54,9 +56,5 @@ func main() {
 	if err := r.Run(":" + port); err != nil {
 		log.Fatalf("Failed to start server")
 	}
-
-	// router := gin.New()
-	// router.Use(gin.Logger())
-	// router.Use(middleware.Authentication())
 
 }
