@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"coffee-pos-backend/models"
+	"coffee-pos-backend/repositories"
 	"fmt"
 	"log"
 	"net/http"
@@ -56,4 +57,60 @@ func VerifyToken() gin.HandlerFunc {
 		}
 
 	}
+}
+
+func AccessPermission(repo *repositories.UserRepository) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		usernameInterface, exists := ctx.Get("username")
+		if !exists {
+			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated at access permission"})
+			ctx.Abort()
+			return
+		}
+
+		baseURL, pathURL := getBaseAndPathURL(ctx.Request.URL.Path)
+		roleTitle := getRoleTitle(baseURL, pathURL)
+
+		//// validate permission checking role repository
+		username, ok := usernameInterface.(string)
+		if !ok {
+			// If the assertion fails, respond with an error
+			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Username is not a valid string"})
+			ctx.Abort()
+			return
+		}
+
+		if !repo.CheckUserPermissionByUsername(username, roleTitle) {
+			ctx.JSON(http.StatusForbidden, gin.H{"error": fmt.Sprintf("%s permission denied", roleTitle)})
+			ctx.Abort()
+			return
+		}
+		ctx.Next()
+
+	}
+}
+
+func getBaseAndPathURL(path string) (string, string) {
+	segments := strings.Split(path, "/")
+	if len(segments) > 2 {
+
+		return segments[1], segments[2]
+	}
+	return "", ""
+}
+
+func getRoleTitle(baseURL, pathURL string) string {
+	title := "" //// default value
+
+	switch baseURL {
+	case "users":
+		if strings.Contains(pathURL, "get") || strings.Contains(pathURL, "history") {
+			title = "UserView"
+		} else {
+			title = "UserEdit"
+		}
+	}
+
+	return title
+
 }

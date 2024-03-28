@@ -9,11 +9,48 @@ import (
 
 func SeedRoles(db *gorm.DB) {
 	roles := []models.Role{
-		{RoleName: "super admin"},
-        {RoleName: "admin"},
-        {RoleName: "staff"},
-        {RoleName: "vip member"},
-        {RoleName: "member"},
+		{
+			RoleName:    "super admin",
+			Description: "Super Admin has all permissions.",
+			Permission: models.RolePermission{
+				UserView:   true,
+				UserCreate: true,
+				UserEdit:   true,
+				MenuView:   true,
+				MenuCreate: true,
+				MenuEdit:   true,
+				RoleView:   true,
+				RoleEdit:   true,
+			},
+		},
+		{
+			RoleName:    "admin",
+			Description: "Admin has limited permissions.",
+			Permission: models.RolePermission{
+				UserView:   true,
+				UserCreate: true,
+				UserEdit:   true,
+				MenuView:   true,
+				MenuCreate: true,
+				MenuEdit:   false, // Example: Admin cannot edit menus
+				RoleView:   true,
+				RoleEdit:   false, // Example: Admin cannot edit roles
+			},
+		},
+		{
+			RoleName:    "staff",
+			Description: "staff has mostly viewing permissions.",
+			Permission: models.RolePermission{
+				UserView:   false,
+				UserCreate: false,
+				UserEdit:   false,
+				MenuView:   true,
+				MenuCreate: false,
+				MenuEdit:   false, // Example: Admin cannot edit menus
+				RoleView:   false, // Example: Admin cannot edit menus
+				RoleEdit:   false, // Example: Admin cannot edit roles
+			},
+		},
 	}
 	for _, role := range roles {
 		err := db.Where(models.Role{RoleName: role.RoleName}).FirstOrCreate(&role).Error
@@ -24,5 +61,3 @@ func SeedRoles(db *gorm.DB) {
 		}
 	}
 }
-
-

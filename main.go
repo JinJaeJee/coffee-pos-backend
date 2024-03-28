@@ -1,7 +1,6 @@
 package main
 
 import (
-	"coffee-pos-backend/middlewares"
 	"coffee-pos-backend/models"
 	"coffee-pos-backend/routes"
 	"fmt"
@@ -34,7 +33,6 @@ func initDB() {
 func main() {
 	initDB()
 	r := gin.Default()
-	r.Use(middlewares.VerifyToken())
 
 	// SeedRoles(db)
 	routes.UserRoutes(r, db)
