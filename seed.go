@@ -46,9 +46,9 @@ func SeedRoles(db *gorm.DB) {
 				UserEdit:   false,
 				MenuView:   true,
 				MenuCreate: false,
-				MenuEdit:   false, // Example: Admin cannot edit menus
-				RoleView:   false, // Example: Admin cannot edit menus
-				RoleEdit:   false, // Example: Admin cannot edit roles
+				MenuEdit:   false,
+				RoleView:   false,
+				RoleEdit:   false,
 			},
 		},
 	}
