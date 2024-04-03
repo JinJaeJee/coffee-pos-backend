@@ -4,14 +4,14 @@ import "gorm.io/gorm"
 
 type Product struct {
 	gorm.Model
-	CreatedBy    string
-	Name         string
-	Picture      string
-	Price        float32
-	Description  string
-	Category     ProductCategory
-	Stock        Stock          `gorm:"foreignKey:ProductID"`
-	OrderDetails []OrderDetails `gorm:"foreignKey:ProductID"`
+	CreatedBy       string
+	Name            string
+	Picture         string
+	Price           float32
+	Description     string
+	Category        ProductCategory
+	IngredientStock []IngredientStock `gorm:"foreignKey:ProductID"`
+	OrderDetails    []OrderDetails    `gorm:"foreignKey:ProductID"`
 }
 
 type ProductCategory string

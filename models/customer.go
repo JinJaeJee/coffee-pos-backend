@@ -1,6 +1,8 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type Customer struct {
 	gorm.Model
@@ -10,5 +12,6 @@ type Customer struct {
 	Email         string
 	PhoneNumber   string
 	LoyaltyPoints int
+	Birthday      string
 	Order         []Order `gorm:"foreignKey:CustomerID"`
 }

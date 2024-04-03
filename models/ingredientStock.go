@@ -2,7 +2,7 @@ package models
 
 import "gorm.io/gorm"
 
-type Stock struct {
+type IngredientStock struct {
 	gorm.Model
 	CreatedBy string
 	ProductID uint
