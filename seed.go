@@ -4,6 +4,7 @@ import (
 	"coffee-pos-backend/models"
 	"log"
 
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -59,5 +60,33 @@ func SeedRoles(db *gorm.DB) {
 		} else {
 			log.Printf("Role '%v' seeded successfully.\n", role.RoleName)
 		}
+	}
+	superAdminRole := models.Role{}
+	db.Where("role_name = ?", "super admin").First(&superAdminRole)
+
+	if superAdminRole.ID != 0 {
+		// Hash the password
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte("hashed546###paSsword"), 14)
+		if err != nil {
+			log.Printf("Error hashing password: %v\n", err)
+			return
+		}
+
+		superAdmin := models.User{
+			Username:     "superadmin",
+			PasswordHash: string(hashedPassword),
+			FullName:     "Super Admin",
+			Email:        "superadmin@coffee.com",
+			IsActive:     true,
+			RoleID:       1,
+		}
+		err = db.Create(&superAdmin).Error
+		if err != nil {
+			log.Printf("Super admin user creation failed: %v\n", err)
+		} else {
+			log.Println("Super admin user seeded successfully.")
+		}
+	} else {
+		log.Println("Super admin role not found. Super admin user cannot be seeded.")
 	}
 }
